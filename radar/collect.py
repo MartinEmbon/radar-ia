@@ -57,7 +57,9 @@ def normalize_url(url: str) -> str:
         if not k.lower().startswith("utm_") and k.lower() not in TRACKING_PARAMS
     ]
     path = parts.path.rstrip("/") or "/"
-    return urlunsplit((parts.scheme.lower(), parts.netloc.lower().removeprefix("www."), path, urlencode(query), ""))
+    # El #fragmento se conserva: algunos sitios (martinfowler.com) publican cada entrega
+    # de una serie como un ancla nueva dentro de la misma URL.
+    return urlunsplit((parts.scheme.lower(), parts.netloc.lower().removeprefix("www."), path, urlencode(query), parts.fragment))
 
 
 def strip_html(text: str) -> str:

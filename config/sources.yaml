@@ -4,7 +4,7 @@
 # `max`: cuántas entradas tomar como máximo de esa fuente.
 
 lookback_hours: 48        # ventana de tiempo; el estado en state/seen.json evita repetidos
-max_items_total: 80       # tope de items que se le pasan a Claude
+max_items_total: 110      # tope de items que se le pasan a Claude
 
 keywords:
   - ai
@@ -38,6 +38,12 @@ keywords:
   - workflow automation
   - n8n
   - healthtech
+  - health ai
+  - clinical ai
+  - ambient scribe
+  - ai scribe
+  - medical ai
+  - ehr
   - machine learning
 
 rss:
@@ -90,6 +96,23 @@ rss:
   - name: TLDR AI
     url: https://tldr.tech/api/rss/ai
     max: 5
+  # Salud: alimenta el radar de NexoSalud (filtrado por IA)
+  - name: MobiHealthNews
+    url: https://www.mobihealthnews.com/feed
+    max: 15
+    filter: true
+  - name: Fierce Healthcare
+    url: https://www.fiercehealthcare.com/rss/xml
+    max: 20
+    filter: true
+  - name: STAT Health Tech
+    url: https://www.statnews.com/category/health-tech/feed/
+    max: 10
+    filter: true
+  - name: Healthcare IT News
+    url: https://www.healthcareitnews.com/home/feed
+    max: 15
+    filter: true
   # Papers (filtrado, si no es demasiado volumen)
   - name: arXiv cs.AI
     url: https://rss.arxiv.org/rss/cs.AI

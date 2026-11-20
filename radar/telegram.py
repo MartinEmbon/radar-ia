@@ -28,9 +28,9 @@ def call(method: str, *, data: dict, files: dict | None = None) -> dict:
     return body["result"]
 
 
-def build_message(date: str, headlines: dict, note_url: str | None, weekly: bool = False) -> str:
-    title = "Radar IA · resumen semanal" if weekly else f"Radar IA · {date}"
-    lines = [f"<b>🛰️ {html.escape(title)}</b>"]
+def build_message(date: str, headlines: dict, note_url: str | None, name: str = "Radar IA", icon: str = "🛰️") -> str:
+    title = f"{name} · {date}"
+    lines = [f"<b>{icon} {html.escape(title)}</b>"]
     if headlines.get("resumen"):
         lines += ["", html.escape(headlines["resumen"])]
     items = headlines.get("titulares", [])
@@ -45,9 +45,10 @@ def build_message(date: str, headlines: dict, note_url: str | None, weekly: bool
     return "\n".join(lines)[:4000]
 
 
-def send(date: str, headlines: dict, note_url: str | None, audios: list[Path], dry_run: bool) -> None:
+def send(date: str, headlines: dict, note_url: str | None, audios: list[Path], dry_run: bool,
+         name: str = "Radar IA", icon: str = "🛰️") -> None:
     chat_id = os.getenv("TELEGRAM_CHAT_ID", "").strip()
-    message = build_message(date, headlines, note_url)
+    message = build_message(date, headlines, note_url, name, icon)
     if dry_run:
         print("— mensaje —\n" + message)
         for a in audios:
@@ -62,8 +63,8 @@ def send(date: str, headlines: dict, note_url: str | None, audios: list[Path], d
         with audio.open("rb") as fh:
             call("sendAudio", data={
                 "chat_id": chat_id,
-                "title": f"Radar IA {'semanal' if weekly else date}",
-                "performer": "Radar IA",
+                "title": f"{name} {'semanal' if weekly else date}",
+                "performer": name,
             }, files={"audio": (audio.name, fh, "audio/mpeg")})
     print(f"Enviado a Telegram: mensaje + {len(audios)} audio(s)")
 
@@ -84,6 +85,8 @@ def main() -> int:
     p.add_argument("--headlines", default="work/headlines.json")
     p.add_argument("--note-url")
     p.add_argument("--audio", nargs="*", default=[])
+    p.add_argument("--name", default="Radar IA", help="nombre que aparece en el mensaje y el audio")
+    p.add_argument("--icon", default="🛰️")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--whoami", action="store_true")
     args = p.parse_args()
@@ -96,7 +99,7 @@ def main() -> int:
     path = Path(args.headlines)
     headlines = json.loads(path.read_text()) if path.exists() else {}
     audios = [Path(a) for a in args.audio if Path(a).exists()]
-    send(args.date, headlines, args.note_url, audios, args.dry_run)
+    send(args.date, headlines, args.note_url, audios, args.dry_run, args.name, args.icon)
     return 0
 
 

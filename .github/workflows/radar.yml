@@ -65,12 +65,13 @@ jobs:
           WEEKLY=false
           if [ "$(date +%u)" = "5" ] || [ "$FORCE_WEEKLY" = "true" ]; then WEEKLY=true; fi
           {
+            echo "NEXO_NOTE_URL=${NOTE_URL%/*}/NexoSalud/$DATE.md"
             echo "DATE=$DATE"
             echo "NOTES_DIR=$NOTES_DIR"
             echo "NOTE_URL=$NOTE_URL"
           } >> "$GITHUB_ENV"
           echo "weekly=$WEEKLY" >> "$GITHUB_OUTPUT"
-          mkdir -p "$NOTES_DIR/Semanal" work
+          mkdir -p "$NOTES_DIR/Semanal" "$NOTES_DIR/NexoSalud" work
 
       - uses: actions/setup-python@v5
         with:
@@ -101,6 +102,17 @@ jobs:
           test -s "$NOTES_DIR/$DATE.md" || { echo "Falta la nota del día"; exit 1; }
           test -s work/guion.txt || { echo "Falta el guion"; exit 1; }
 
+      - name: 2b. Radar NexoSalud (solo si hay novedades)
+        continue-on-error: true
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_MAX_BUDGET_USD: "0.80"
+        run: |
+          bash scripts/run_claude.sh prompts/nexosalud.md
+          if [ -s work/guion_nexosalud.txt ]; then echo "NexoSalud: hay novedades"
+          else echo "NexoSalud: sin novedades hoy. $(cat work/nexosalud_sin_novedades.txt 2>/dev/null)"; fi
+
       - name: 3. Resumen semanal (viernes)
         if: steps.setup.outputs.weekly == 'true'
         continue-on-error: true
@@ -118,6 +130,9 @@ jobs:
           python -m radar.tts work/guion.txt "work/radar-$DATE.mp3"
           if [ -s work/guion_semanal.txt ]; then
             python -m radar.tts work/guion_semanal.txt "work/radar-semanal-$DATE.mp3"
+          fi
+          if [ -s work/guion_nexosalud.txt ]; then
+            python -m radar.tts work/guion_nexosalud.txt "work/nexosalud-$DATE.mp3"
           fi
 
       - name: 5. Guardar nota y estado
@@ -146,6 +161,16 @@ jobs:
         run: |
           python -m radar.telegram --date "$DATE" --note-url "$NOTE_URL" \
             --audio "work/radar-$DATE.mp3" "work/radar-semanal-$DATE.mp3"
+
+      - name: 7. Enviar NexoSalud a Telegram (si hubo novedades)
+        if: ${{ !inputs.skip_telegram && hashFiles('work/headlines_nexosalud.json') != '' }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python -m radar.telegram --date "$DATE" --name "Radar NexoSalud" --icon "🩺" \
+            --headlines work/headlines_nexosalud.json --note-url "$NEXO_NOTE_URL" \
+            --audio "work/nexosalud-$DATE.mp3"
 
       - name: Guardar artefactos de depuración
         if: always()

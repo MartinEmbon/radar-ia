@@ -59,9 +59,6 @@ Si hoy no hubo ninguno, escribí "Nada relevante hoy."
 ## Para Digibee
 Integración, agentes, digital workers y argumentos frente a la competencia.
 
-## Para NexoSalud
-Salud, healthtech y LatAm.
-
 ## Para probar
 - [Herramienta o repo](url): qué probar concretamente y cuánto tiempo lleva.
 
@@ -79,7 +76,7 @@ Salud, healthtech y LatAm.
 - Entre 900 y 1200 palabras, unos 6 a 8 minutos. Si el día fue flojo, puede ser más corto.
 - Arrancá con: "Buen día, Martín. Este es tu radar de IA del $DATE_LONG." y anticipá los tres temas principales en una oración.
 - Si hubo un artículo de equipos y mentalidad, dedicale un bloque propio de uno o dos minutos con la idea central y cómo aplicarla.
-- Por cada historia contá qué pasó, por qué importa y, si aplica, qué significa para Digibee o NexoSalud. Usá transiciones naturales, como si fuera un podcast corto.
+- Por cada historia contá qué pasó, por qué importa y, si aplica, qué significa para Digibee. NexoSalud tiene su propio radar aparte: no lo menciones acá. Usá transiciones naturales, como si fuera un podcast corto.
 - Escribí los números y las siglas como se dicen ("eme ce pe" para MCP la primera vez, "dos mil veintiséis").
 - Cerrá con una sola cosa concreta para probar hoy y despedite en una línea.
 

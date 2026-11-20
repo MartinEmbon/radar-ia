@@ -17,7 +17,8 @@ def fake_get(content=b"", payload=None):
 
 
 def test_normalize_url_strips_tracking():
-    assert collect.normalize_url("https://WWW.Ex.com/a/?utm_source=x&id=3#top") == "https://ex.com/a?id=3"
+    assert collect.normalize_url("https://WWW.Ex.com/a/?utm_source=x&id=3") == "https://ex.com/a?id=3"
+    assert collect.normalize_url("https://martinfowler.com/articles/x/#Part2").endswith("#Part2")
 
 
 def test_keyword_regex_word_boundaries():

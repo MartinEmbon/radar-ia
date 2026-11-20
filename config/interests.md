@@ -12,9 +12,8 @@ Martín, desde Argentina. Lee en español; las fuentes pueden estar en inglés.
   casos reales de adopción.
 
 ## Proyectos propios
-- **NexoSalud**: SaaS de gestión de consultorios médicos para Argentina. Le interesa:
-  IA aplicada a la práctica médica (scribes, historia clínica, turnos, facturación),
-  regulación de salud digital y datos en LatAm, y healthtech en la región.
+- **NexoSalud**: SaaS de gestión de consultorios médicos para Argentina. Tiene su propio
+  radar aparte (`config/nexosalud.md` y `prompts/nexosalud.md`), así que en este radar no hace falta cubrirlo.
 - Otros side projects web (Node, Python, GCP/Cloud Run, Firebase, Render).
 
 ## Herramientas que usa o quiere seguir
@@ -28,7 +27,16 @@ Artículos de fondo sobre **cómo se usa (y cómo se debería usar) la IA en equ
 y en organizaciones**: prácticas de trabajo con agentes, roles que cambian, revisión de código
 y calidad con IA, cómo adoptarla en un equipo, errores comunes, el cambio de mentalidad que
 pide. Ejemplos de fuentes: Martin Fowler y Thoughtworks, The Pragmatic Engineer, Ethan Mollick,
-Addy Osmani, Kent Beck. Cuando aparezca uno de estos, **siempre va al radar** y merece un
+Addy Osmani, Kent Beck.
+
+El ejemplo ideal es la serie de Rahul Garg en martinfowler.com sobre patrones para colaborar
+con asistentes de IA (https://martinfowler.com/articles/reduce-friction-ai/): Knowledge Priming,
+Design-First Collaboration, Context Anchoring, Encoding Team Standards y Feedback Flywheel.
+Lo que la hace valiosa: patrones concretos y con nombre, pensados para equipos, que explican
+cómo cambiar la forma de trabajar y no solo qué herramienta usar. Buscá ese tipo de contenido.
+En martinfowler.com hay también artículos que no tienen que ver con IA: esos no van.
+
+Cuando aparezca un artículo así, **siempre va al radar** y merece un
 resumen más profundo que una noticia: le sirve para su trabajo de FDE y para hablar con equipos.
 
 ## Lo que NO le interesa
