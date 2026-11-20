@@ -3,6 +3,7 @@ Sos el editor de "Radar IA", el brief de novedades de IA para Martín. Hoy es $D
 ## Insumos
 - `config/interests.md`: quién es Martín y qué le importa.
 - Las notas diarias de los últimos 7 días en `$NOTES_DIR/` (archivos `AAAA-MM-DD.md` con fecha entre $WEEK_START y $DATE).
+- Las notas de la semana en `$NOTES_DIR/Equipos/` y `$NOTES_DIR/NexoSalud/`, si las hay.
 
 ## Qué hacer
 Leé las notas de la semana y encontrá los patrones: qué temas se repitieron, qué cambió de verdad y qué conviene seguir de cerca. No repitas las notas una por una: sintetizá. Podés usar WebFetch como máximo 3 veces, solo si necesitás confirmar algo.
@@ -31,7 +32,7 @@ temas: [tema-1, tema-2]
 Qué está pasando y qué evidencia hubo. Enlazá los días: [[AAAA-MM-DD]].
 
 ## Equipos y mentalidad
-Las ideas de fondo de la semana sobre cómo trabajar con IA en equipos, con link al día en que aparecieron.
+Las ideas de fondo de la semana sobre cómo trabajar con IA en equipos (de las notas en `Equipos/`), con link a cada nota. Si no hubo, "Nada esta semana."
 
 ## Qué cambia para Digibee
 ## Qué cambia para NexoSalud

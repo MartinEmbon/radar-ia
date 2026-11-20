@@ -36,7 +36,7 @@ Lo que la hace valiosa: patrones concretos y con nombre, pensados para equipos, 
 cómo cambiar la forma de trabajar y no solo qué herramienta usar. Buscá ese tipo de contenido.
 En martinfowler.com hay también artículos que no tienen que ver con IA: esos no van.
 
-Cuando aparezca un artículo así, **siempre va al radar** y merece un
+Estos artículos tienen su propio radar y audio aparte (`prompts/equipos.md`) y merecen un
 resumen más profundo que una noticia: le sirve para su trabajo de FDE y para hablar con equipos.
 
 ## Lo que NO le interesa
