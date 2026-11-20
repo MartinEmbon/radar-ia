@@ -1,0 +1,156 @@
+name: Radar IA
+
+on:
+  schedule:
+    # 10:27 UTC = 07:27 en Argentina (UTC-3, sin horario de verano)
+    - cron: "27 10 * * *"
+  workflow_dispatch:
+    inputs:
+      weekly:
+        description: "Generar también el resumen semanal"
+        type: boolean
+        default: false
+      skip_telegram:
+        description: "No mandar a Telegram (prueba)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: radar-ia
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TZ: America/Argentina/Cordoba
+      RADAR_TZ: America/Argentina/Cordoba
+      CLAUDE_MODEL: ${{ vars.CLAUDE_MODEL || 'sonnet' }}
+      CLAUDE_MAX_BUDGET_USD: ${{ vars.CLAUDE_MAX_BUDGET_USD || '1.50' }}
+      TTS_PROVIDER: ${{ vars.TTS_PROVIDER || 'openai' }}
+      OPENAI_TTS_VOICE: ${{ vars.OPENAI_TTS_VOICE || 'ash' }}
+      ELEVENLABS_VOICE_ID: ${{ vars.ELEVENLABS_VOICE_ID }}
+
+    steps:
+      - name: Checkout radar
+        uses: actions/checkout@v4
+
+      - name: Checkout vault de Obsidian (opcional)
+        if: ${{ vars.VAULT_REPO != '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.VAULT_REPO }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          path: vault
+
+      - name: Variables del día
+        id: setup
+        env:
+          VAULT_REPO: ${{ vars.VAULT_REPO }}
+          VAULT_SUBDIR: ${{ vars.VAULT_SUBDIR || 'Radar' }}
+          FORCE_WEEKLY: ${{ inputs.weekly }}
+        run: |
+          DATE=$(date +%F)
+          if [ -n "$VAULT_REPO" ]; then
+            NOTES_DIR="vault/$VAULT_SUBDIR"
+            NOTE_URL="https://github.com/$VAULT_REPO/blob/HEAD/$VAULT_SUBDIR/$DATE.md"
+          else
+            NOTES_DIR="notes/Radar"
+            NOTE_URL="https://github.com/$GITHUB_REPOSITORY/blob/HEAD/notes/Radar/$DATE.md"
+          fi
+          WEEKLY=false
+          if [ "$(date +%u)" = "5" ] || [ "$FORCE_WEEKLY" = "true" ]; then WEEKLY=true; fi
+          {
+            echo "DATE=$DATE"
+            echo "NOTES_DIR=$NOTES_DIR"
+            echo "NOTE_URL=$NOTE_URL"
+          } >> "$GITHUB_ENV"
+          echo "weekly=$WEEKLY" >> "$GITHUB_OUTPUT"
+          mkdir -p "$NOTES_DIR/Semanal" work
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Instalar dependencias
+        run: |
+          pip install -r requirements.txt
+          npm install -g @anthropic-ai/claude-code
+          command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+
+      - name: 1. Recolectar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m radar.collect
+
+      - name: 2. Escribir el radar diario (Claude Code)
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          bash scripts/run_claude.sh prompts/daily.md
+          test -s "$NOTES_DIR/$DATE.md" || { echo "Falta la nota del día"; exit 1; }
+          test -s work/guion.txt || { echo "Falta el guion"; exit 1; }
+
+      - name: 3. Resumen semanal (viernes)
+        if: steps.setup.outputs.weekly == 'true'
+        continue-on-error: true
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: bash scripts/run_claude.sh prompts/weekly.md
+
+      - name: 4. Audio
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          python -m radar.tts work/guion.txt "work/radar-$DATE.mp3"
+          if [ -s work/guion_semanal.txt ]; then
+            python -m radar.tts work/guion_semanal.txt "work/radar-semanal-$DATE.mp3"
+          fi
+
+      - name: 5. Guardar nota y estado
+        run: |
+          git config --global user.name "radar-ia[bot]"
+          git config --global user.email "radar-ia@users.noreply.github.com"
+
+          if [ -d vault/.git ]; then
+            cd vault
+            git add -A "${NOTES_DIR#vault/}"
+            git diff --cached --quiet || git commit -m "Radar IA $DATE"
+            git pull --rebase --autostash && git push
+            cd ..
+          fi
+
+          git add state/
+          [ -d vault/.git ] || git add notes/
+          git diff --cached --quiet || git commit -m "Radar IA $DATE: estado"
+          git pull --rebase --autostash && git push
+
+      - name: 6. Enviar a Telegram
+        if: ${{ !inputs.skip_telegram }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python -m radar.telegram --date "$DATE" --note-url "$NOTE_URL" \
+            --audio "work/radar-$DATE.mp3" "work/radar-semanal-$DATE.mp3"
+
+      - name: Guardar artefactos de depuración
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-${{ github.run_id }}
+          path: work/
+          retention-days: 7

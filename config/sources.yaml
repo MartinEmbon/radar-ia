@@ -1,0 +1,107 @@
+# Fuentes del Radar IA.
+# Si una fuente falla (URL cambió, timeout), el recolector la saltea y sigue.
+# `filter: true` aplica el filtro de palabras clave (útil para feeds generales).
+# `max`: cuántas entradas tomar como máximo de esa fuente.
+
+lookback_hours: 48        # ventana de tiempo; el estado en state/seen.json evita repetidos
+max_items_total: 80       # tope de items que se le pasan a Claude
+
+keywords:
+  - ai
+  - llm
+  - llms
+  - agent
+  - agents
+  - agentic
+  - mcp
+  - claude
+  - anthropic
+  - openai
+  - gpt
+  - gemini
+  - copilot
+  - cursor
+  - codex
+  - openclaw
+  - obsidian
+  - rag
+  - embedding
+  - embeddings
+  - inference
+  - fine-tuning
+  - deepseek
+  - qwen
+  - llama
+  - mistral
+  - hugging face
+  - ipaas
+  - workflow automation
+  - n8n
+  - healthtech
+  - machine learning
+
+rss:
+  # Labs y empresas
+  - name: OpenAI
+    url: https://openai.com/news/rss.xml
+    max: 10
+  - name: Google DeepMind
+    url: https://deepmind.google/blog/rss.xml
+    max: 8
+  - name: Google AI (Keyword)
+    url: https://blog.google/technology/ai/rss/
+    max: 8
+  - name: Hugging Face
+    url: https://huggingface.co/blog/feed.xml
+    max: 8
+  - name: GitHub Changelog
+    url: https://github.blog/changelog/feed/
+    max: 15
+    filter: true
+  - name: Microsoft AI Blog
+    url: https://blogs.microsoft.com/ai/feed/
+    max: 6
+  # Newsletters y analistas
+  - name: Simon Willison
+    url: https://simonwillison.net/atom/everything/
+    max: 12
+  - name: Latent Space
+    url: https://www.latent.space/feed
+    max: 5
+  - name: Import AI
+    url: https://importai.substack.com/feed
+    max: 3
+  - name: Interconnects
+    url: https://www.interconnects.ai/feed
+    max: 3
+  - name: TLDR AI
+    url: https://tldr.tech/api/rss/ai
+    max: 5
+  # Papers (filtrado, si no es demasiado volumen)
+  - name: arXiv cs.AI
+    url: https://rss.arxiv.org/rss/cs.AI
+    max: 40
+    filter: true
+    keep: 6
+
+# Anthropic no publica RSS: el prompt le pide a Claude revisar anthropic.com/news directamente.
+check_pages:
+  - https://www.anthropic.com/news
+  - https://www.claude.com/blog
+
+hacker_news:
+  enabled: true
+  min_points: 80
+  max: 15
+
+github:
+  enabled: true
+  min_stars: 40
+  max_per_query: 5
+  created_within_days: 10
+  queries:
+    - topic:llm
+    - topic:ai-agents
+    - topic:mcp
+    - topic:claude-code
+    - topic:agents
