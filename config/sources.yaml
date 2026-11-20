@@ -59,9 +59,22 @@ rss:
     max: 15
     filter: true
   # Newsletters y analistas
+  # Equipos, prácticas y cambio de mentalidad con IA
   - name: Martin Fowler
     url: https://martinfowler.com/feed.atom
     max: 5
+  - name: The Pragmatic Engineer
+    url: https://newsletter.pragmaticengineer.com/feed
+    max: 3
+  - name: One Useful Thing (Ethan Mollick)
+    url: https://www.oneusefulthing.org/feed
+    max: 3
+  - name: Addy Osmani
+    url: https://addyo.substack.com/feed
+    max: 3
+  - name: Kent Beck (Tidy First?)
+    url: https://tidyfirst.substack.com/feed
+    max: 3
   - name: Simon Willison
     url: https://simonwillison.net/atom/everything/
     max: 12

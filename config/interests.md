@@ -23,6 +23,14 @@ Martín, desde Argentina. Lee en español; las fuentes pueden estar en inglés.
 - Lanzamientos de modelos (Anthropic, OpenAI, Google, open-weight) **solo cuando cambian
   algo práctico**: precio, capacidades, herramientas nuevas.
 
+## Prioridad alta: IA en equipos y cambio de mentalidad
+Artículos de fondo sobre **cómo se usa (y cómo se debería usar) la IA en equipos de software
+y en organizaciones**: prácticas de trabajo con agentes, roles que cambian, revisión de código
+y calidad con IA, cómo adoptarla en un equipo, errores comunes, el cambio de mentalidad que
+pide. Ejemplos de fuentes: Martin Fowler y Thoughtworks, The Pragmatic Engineer, Ethan Mollick,
+Addy Osmani, Kent Beck. Cuando aparezca uno de estos, **siempre va al radar** y merece un
+resumen más profundo que una noticia: le sirve para su trabajo de FDE y para hablar con equipos.
+
 ## Lo que NO le interesa
 - Hype sin sustancia, rondas de financiamiento sin impacto práctico, drama de redes,
   rankings de benchmarks sin contexto, papers puramente teóricos.

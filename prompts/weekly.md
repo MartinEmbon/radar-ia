@@ -30,6 +30,9 @@ temas: [tema-1, tema-2]
 ### 1. Nombre de la tendencia
 Qué está pasando y qué evidencia hubo. Enlazá los días: [[AAAA-MM-DD]].
 
+## Equipos y mentalidad
+Las ideas de fondo de la semana sobre cómo trabajar con IA en equipos, con link al día en que aparecieron.
+
 ## Qué cambia para Digibee
 ## Qué cambia para NexoSalud
 ## Para seguir de cerca
