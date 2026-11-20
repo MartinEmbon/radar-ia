@@ -59,6 +59,9 @@ rss:
     max: 15
     filter: true
   # Newsletters y analistas
+  - name: Martin Fowler
+    url: https://martinfowler.com/feed.atom
+    max: 5
   - name: Simon Willison
     url: https://simonwillison.net/atom/everything/
     max: 12
