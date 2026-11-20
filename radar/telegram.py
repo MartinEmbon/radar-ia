@@ -20,7 +20,7 @@ API = "https://api.telegram.org/bot{token}/{method}"
 
 
 def call(method: str, *, data: dict, files: dict | None = None) -> dict:
-    token = os.environ["TELEGRAM_BOT_TOKEN"]
+    token = os.environ["TELEGRAM_BOT_TOKEN"].strip()  # un Enter al pegar el secret rompe la URL
     resp = requests.post(API.format(token=token, method=method), data=data, files=files, timeout=120)
     body = resp.json()
     if not body.get("ok"):
@@ -46,7 +46,7 @@ def build_message(date: str, headlines: dict, note_url: str | None, weekly: bool
 
 
 def send(date: str, headlines: dict, note_url: str | None, audios: list[Path], dry_run: bool) -> None:
-    chat_id = os.getenv("TELEGRAM_CHAT_ID", "")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID", "").strip()
     message = build_message(date, headlines, note_url)
     if dry_run:
         print("— mensaje —\n" + message)

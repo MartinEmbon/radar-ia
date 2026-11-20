@@ -71,7 +71,7 @@ def post_with_retry(url: str, **kwargs) -> requests.Response:
 def openai_tts(text: str) -> bytes:
     resp = post_with_retry(
         "https://api.openai.com/v1/audio/speech",
-        headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"},
+        headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY'].strip()}"},
         json={
             "model": os.getenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts"),
             "voice": os.getenv("OPENAI_TTS_VOICE", "ash"),
@@ -84,10 +84,10 @@ def openai_tts(text: str) -> bytes:
 
 
 def elevenlabs_tts(text: str) -> bytes:
-    voice = os.environ["ELEVENLABS_VOICE_ID"]
+    voice = os.environ["ELEVENLABS_VOICE_ID"].strip()
     resp = post_with_retry(
         f"https://api.elevenlabs.io/v1/text-to-speech/{voice}?output_format=mp3_44100_128",
-        headers={"xi-api-key": os.environ["ELEVENLABS_API_KEY"]},
+        headers={"xi-api-key": os.environ["ELEVENLABS_API_KEY"].strip()},
         json={
             "text": text,
             "model_id": os.getenv("ELEVENLABS_MODEL", "eleven_multilingual_v2"),
