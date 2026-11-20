@@ -24,7 +24,7 @@ import yaml
 
 from radar import render
 
-UA = "radar-ia/1.0 (personal news digest)"
+UA = "Mozilla/5.0 (compatible; radar-ia/1.0; personal RSS reader; +https://github.com/MartinEmbon/radar-ia)"
 TIMEOUT = 20
 SEEN_RETENTION_DAYS = 45
 TRACKING_PARAMS = {"ref", "ref_src", "source", "fbclid", "gclid", "mc_cid", "mc_eid"}
