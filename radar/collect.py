@@ -22,6 +22,8 @@ import feedparser
 import requests
 import yaml
 
+from radar import render
+
 UA = "radar-ia/1.0 (personal news digest)"
 TIMEOUT = 20
 SEEN_RETENTION_DAYS = 45
@@ -206,7 +208,12 @@ def prune_seen(seen: dict[str, str]) -> dict[str, str]:
 # ---------------------------------------------------------------- main
 
 
+def local_today() -> str:
+    return render.today().isoformat()
+
+
 def collect(config: dict, seen: dict[str, str]) -> tuple[list[Item], list[str], int]:
+    today = local_today()
     since = now_utc() - dt.timedelta(hours=config.get("lookback_hours", 48))
     kw = keyword_regex(config.get("keywords", []))
     items: list[Item] = []
@@ -233,7 +240,9 @@ def collect(config: dict, seen: dict[str, str]) -> tuple[list[Item], list[str], 
 
     unique: dict[str, Item] = {}
     for item in items:
-        if item.key in seen or item.key in unique:
+        # Lo visto HOY no cuenta como repetido: así una segunda corrida del mismo
+        # día trabaja con las mismas noticias en vez de quedarse sin material.
+        if seen.get(item.key, today) != today or item.key in unique:
             continue
         unique[item.key] = item
     fresh = list(unique.values())[: config.get("max_items_total", 80)]
@@ -254,7 +263,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Recolectando fuentes…")
     fresh, errors, attempted = collect(config, seen)
 
-    today = now_utc().date().isoformat()
+    today = local_today()
     for item in fresh:
         seen[item.key] = today
 

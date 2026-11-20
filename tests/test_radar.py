@@ -103,3 +103,13 @@ def test_telegram_message_escapes_html():
     assert "Agentes &lt;everywhere&gt;" in msg
     assert '<a href="https://x.com/?a=1&amp;b=2">A &amp; B</a>' in msg
     assert "Nota completa" in msg
+
+
+def test_same_day_rerun_keeps_todays_items(monkeypatch):
+    item = collect.Item(title="x", url="https://ex.com/a", source="s", kind="rss")
+    monkeypatch.setattr(collect, "from_rss", lambda *a: [item])
+    cfg = {"rss": [{"name": "s", "url": "u"}]}
+    fresh, _, _ = collect.collect(cfg, {item.key: collect.local_today()})
+    assert len(fresh) == 1
+    fresh, _, _ = collect.collect(cfg, {item.key: "2000-01-01"})
+    assert fresh == []
