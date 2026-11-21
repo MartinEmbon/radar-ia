@@ -271,7 +271,7 @@ def main(argv: list[str] | None = None) -> int:
 
     payload = {
         "generated_at": now_utc().isoformat(),
-        "check_pages": config.get("check_pages", []),
+        **{k: v for k, v in config.items() if k.startswith("check_pages")},
         "errors": errors,
         "items": [asdict(i) for i in fresh],
     }

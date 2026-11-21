@@ -50,16 +50,16 @@ rss:
   # Labs y empresas
   - name: OpenAI
     url: https://openai.com/news/rss.xml
-    max: 10
+    max: 4
   - name: Google DeepMind
     url: https://deepmind.google/blog/rss.xml
-    max: 8
+    max: 3
   - name: Google AI (Keyword)
     url: https://blog.google/technology/ai/rss/
-    max: 8
+    max: 3
   - name: Hugging Face
     url: https://huggingface.co/blog/feed.xml
-    max: 8
+    max: 3
   - name: GitHub Changelog
     url: https://github.blog/changelog/feed/
     max: 15
@@ -75,21 +75,12 @@ rss:
   - name: One Useful Thing (Ethan Mollick)
     url: https://www.oneusefulthing.org/feed
     max: 3
-  - name: Addy Osmani
-    url: https://addyo.substack.com/feed
-    max: 3
-  - name: Kent Beck (Tidy First?)
-    url: https://tidyfirst.substack.com/feed
-    max: 3
   - name: Simon Willison
     url: https://simonwillison.net/atom/everything/
     max: 12
   - name: Latent Space
     url: https://www.latent.space/feed
     max: 5
-  - name: Import AI
-    url: https://importai.substack.com/feed
-    max: 3
   - name: Interconnects
     url: https://www.interconnects.ai/feed
     max: 3
@@ -97,10 +88,6 @@ rss:
     url: https://tldr.tech/api/rss/ai
     max: 5
   # Salud: alimenta el radar de NexoSalud (filtrado por IA)
-  - name: MobiHealthNews
-    url: https://www.mobihealthnews.com/feed
-    max: 15
-    filter: true
   - name: Fierce Healthcare
     url: https://www.fiercehealthcare.com/rss/xml
     max: 20
@@ -109,21 +96,21 @@ rss:
     url: https://www.statnews.com/category/health-tech/feed/
     max: 10
     filter: true
-  - name: Healthcare IT News
-    url: https://www.healthcareitnews.com/home/feed
-    max: 15
-    filter: true
-  # Papers (filtrado, si no es demasiado volumen)
-  - name: arXiv cs.AI
-    url: https://rss.arxiv.org/rss/cs.AI
-    max: 40
-    filter: true
-    keep: 6
 
 # Anthropic no publica RSS: el prompt le pide a Claude revisar anthropic.com/news directamente.
 check_pages:
   - https://www.anthropic.com/news
   - https://www.claude.com/blog
+
+# Blogs que bloquean la descarga del RSS desde GitHub: los revisa Claude directamente.
+check_pages_equipos:
+  - https://martinfowler.com/tags/generative%20AI.html
+  - https://addyo.substack.com/archive
+  - https://tidyfirst.substack.com/archive
+
+check_pages_nexosalud:
+  - https://www.mobihealthnews.com/
+  - https://www.healthcareitnews.com/
 
 hacker_news:
   enabled: true
@@ -133,7 +120,7 @@ hacker_news:
 github:
   enabled: true
   min_stars: 40
-  max_per_query: 5
+  max_per_query: 3
   created_within_days: 10
   queries:
     - topic:llm

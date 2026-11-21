@@ -128,7 +128,7 @@ jobs:
           if [ -s work/guion_nexosalud.txt ]; then echo "NexoSalud: hay novedades"
           else echo "NexoSalud: sin novedades hoy. $(cat work/nexosalud_sin_novedades.txt 2>/dev/null)"; fi
 
-      - name: 2c. Equipos y mentalidad (solo si hay artículos)
+      - name: 2c. Práctica del día (artículo nuevo o de la cola de lecturas)
         if: steps.setup.outputs.skip != 'true'
         continue-on-error: true
         env:
@@ -137,8 +137,8 @@ jobs:
           CLAUDE_MAX_BUDGET_USD: "0.80"
         run: |
           bash scripts/run_claude.sh prompts/equipos.md
-          if [ -s work/guion_equipos.txt ]; then echo "Equipos: hay artículos"
-          else echo "Equipos: sin artículos hoy. $(cat work/equipos_sin_novedades.txt 2>/dev/null)"; fi
+          if [ -s work/guion_equipos.txt ]; then echo "Práctica del día: lista"
+          else echo "Práctica del día: no se generó"; fi
 
       - name: 3. Resumen semanal (viernes)
         if: ${{ steps.setup.outputs.skip != 'true' && steps.setup.outputs.weekly == 'true' }}
@@ -191,13 +191,13 @@ jobs:
           python -m radar.telegram --date "$DATE" --note-url "$NOTE_URL" \
             --audio "work/radar-$DATE.mp3" "work/radar-semanal-$DATE.mp3"
 
-      - name: 6b. Enviar Equipos y mentalidad a Telegram (si hubo artículos)
+      - name: 6b. Enviar Práctica del día a Telegram
         if: ${{ steps.setup.outputs.skip != 'true' && !inputs.skip_telegram && hashFiles('work/headlines_equipos.json') != '' }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          python -m radar.telegram --date "$DATE" --name "Equipos y mentalidad" --icon "🧭" \
+          python -m radar.telegram --date "$DATE" --name "Práctica del día" --icon "🧭" \
             --headlines work/headlines_equipos.json --note-url "$EQUIPOS_NOTE_URL" \
             --audio "work/equipos-$DATE.mp3"
 

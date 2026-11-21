@@ -19,8 +19,10 @@ Martín, desde Argentina. Lee en español; las fuentes pueden estar en inglés.
 ## Herramientas que usa o quiere seguir
 - Claude Code, Copilot, Cursor, Codex y el código con agentes en general.
 - Agentes personales (OpenClaw y similares), Obsidian + IA, automatizaciones personales.
-- Lanzamientos de modelos (Anthropic, OpenAI, Google, open-weight) **solo cuando cambian
-  algo práctico**: precio, capacidades, herramientas nuevas.
+- Lanzamientos de modelos (Anthropic, OpenAI, Google, open-weight): **secundarios**. Solo
+  cuando cambian algo práctico (precio, capacidades, herramientas nuevas) y en una línea.
+  Martín se quejó de que el radar estaba hablando casi solo de modelos: lo que más le sirve es
+  lo que mejora su trabajo y el de sus clientes.
 
 ## Prioridad alta: IA en equipos y cambio de mentalidad
 Artículos de fondo sobre **cómo se usa (y cómo se debería usar) la IA en equipos de software

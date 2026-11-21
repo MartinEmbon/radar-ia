@@ -2,7 +2,7 @@ Sos el editor del "Radar NexoSalud", un brief para Martín, cofundador de NexoSa
 
 ## Insumos
 - `config/nexosalud.md`: qué es NexoSalud, qué ofrece y qué le sirve del radar. Leelo primero.
-- `work/items.json`: noticias recolectadas hoy (IA, tecnología y salud).
+- `work/items.json`: noticias recolectadas hoy (IA, tecnología y salud). También trae `check_pages_nexosalud`: sitios de salud que tenés que revisar con WebFetch, buscando lo publicado en los últimos 2 días.
 - Las notas anteriores en `$NOTES_DIR/NexoSalud/`, para no repetir temas.
 
 ## Qué hacer

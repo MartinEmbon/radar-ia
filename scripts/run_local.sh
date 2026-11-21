@@ -22,7 +22,7 @@ rm -f work/guion*.txt work/headlines*.json work/*_sin_novedades.txt
 
 python -m radar.collect
 bash scripts/run_claude.sh prompts/daily.md
-bash scripts/run_claude.sh prompts/equipos.md || echo "⚠️  Falló Equipos y mentalidad, sigo igual"
+bash scripts/run_claude.sh prompts/equipos.md || echo "⚠️  Falló la Práctica del día, sigo igual"
 bash scripts/run_claude.sh prompts/nexosalud.md || echo "⚠️  Falló el radar NexoSalud, sigo igual"
 [ "$WEEKLY" = true ] && bash scripts/run_claude.sh prompts/weekly.md
 
@@ -34,7 +34,7 @@ if [ "$TELEGRAM" = true ]; then
   python -m radar.telegram --date "$DATE" --audio "work/radar-$DATE.mp3" "work/radar-semanal-$DATE.mp3"
   if [ -s work/headlines_equipos.json ]; then
     [ -s work/guion_equipos.txt ] && python -m radar.tts work/guion_equipos.txt "work/equipos-$DATE.mp3"
-    python -m radar.telegram --date "$DATE" --name "Equipos y mentalidad" --icon "🧭" \
+    python -m radar.telegram --date "$DATE" --name "Práctica del día" --icon "🧭" \
       --headlines work/headlines_equipos.json --audio "work/equipos-$DATE.mp3"
   fi
   if [ -s work/headlines_nexosalud.json ]; then
