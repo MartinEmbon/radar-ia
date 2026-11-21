@@ -1,0 +1,52 @@
+name: Reenviar a Telegram
+
+# Vuelve a generar el audio y reenvía uno de los mensajes del último radar,
+# a partir de los textos guardados en state/ultimo/. No usa Claude.
+
+on:
+  workflow_dispatch:
+    inputs:
+      cual:
+        description: "Qué reenviar"
+        type: choice
+        options: [practica, radar, nexosalud]
+        default: practica
+
+jobs:
+  reenviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: America/Argentina/Cordoba
+      TTS_PROVIDER: ${{ vars.TTS_PROVIDER || 'openai' }}
+      OPENAI_TTS_VOICE: ${{ vars.OPENAI_TTS_VOICE || 'ash' }}
+      ELEVENLABS_VOICE_ID: ${{ vars.ELEVENLABS_VOICE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: |
+          pip install -r requirements.txt
+          command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+      - name: Audio y Telegram
+        env:
+          CUAL: ${{ inputs.cual }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          DATE=$(cat state/ultimo/fecha.txt)
+          BASE="https://github.com/$GITHUB_REPOSITORY/blob/HEAD/notes/Radar"
+          case "$CUAL" in
+            practica)  SUF=_equipos;   NAME="Práctica del día"; ICON="🧭"; NOTE="$BASE/Equipos/$DATE.md" ;;
+            nexosalud) SUF=_nexosalud; NAME="Radar NexoSalud";  ICON="🩺"; NOTE="$BASE/NexoSalud/$DATE.md" ;;
+            *)         SUF="";         NAME="Radar IA";         ICON="🛰️"; NOTE="$BASE/$DATE.md" ;;
+          esac
+          test -s "state/ultimo/guion$SUF.txt" || { echo "No hay texto guardado para '$CUAL' del $DATE"; exit 1; }
+          mkdir -p work
+          python -m radar.tts "state/ultimo/guion$SUF.txt" "work/$CUAL-$DATE.mp3"
+          python -m radar.telegram --date "$DATE" --name "$NAME" --icon "$ICON" \
+            --headlines "state/ultimo/headlines$SUF.json" --note-url "$NOTE" --audio "work/$CUAL-$DATE.mp3"

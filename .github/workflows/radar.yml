@@ -122,9 +122,6 @@ jobs:
           CLAUDE_MAX_BUDGET_USD: "0.80"
         run: |
           bash scripts/run_claude.sh prompts/nexosalud.md
-          if [ -s work/guion_equipos.txt ]; then
-            python -m radar.tts work/guion_equipos.txt "work/equipos-$DATE.mp3"
-          fi
           if [ -s work/guion_nexosalud.txt ]; then echo "NexoSalud: hay novedades"
           else echo "NexoSalud: sin novedades hoy. $(cat work/nexosalud_sin_novedades.txt 2>/dev/null)"; fi
 
@@ -162,6 +159,9 @@ jobs:
           if [ -s work/guion_nexosalud.txt ]; then
             python -m radar.tts work/guion_nexosalud.txt "work/nexosalud-$DATE.mp3"
           fi
+          if [ -s work/guion_equipos.txt ]; then
+            python -m radar.tts work/guion_equipos.txt "work/equipos-$DATE.mp3"
+          fi
 
       - name: 5. Guardar nota y estado
         if: steps.setup.outputs.skip != 'true'
@@ -177,7 +177,11 @@ jobs:
             cd ..
           fi
 
-          git add state/
+          # Copia de los textos del día, para poder reenviar audios sin volver a generar todo
+          rm -rf state/ultimo && mkdir -p state/ultimo
+          cp work/guion*.txt work/headlines*.json state/ultimo/ 2>/dev/null || true
+          echo "$DATE" > state/ultimo/fecha.txt
+          git add -A state/
           [ -d vault/.git ] || git add notes/
           git diff --cached --quiet || git commit -m "Radar IA $DATE: estado"
           git pull --rebase --autostash && git push
