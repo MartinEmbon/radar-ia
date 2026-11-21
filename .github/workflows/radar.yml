@@ -72,29 +72,39 @@ jobs:
             echo "NOTE_URL=$NOTE_URL"
           } >> "$GITHUB_ENV"
           echo "weekly=$WEEKLY" >> "$GITHUB_OUTPUT"
+          # Si la corrida programada llega tarde y el radar de hoy ya se hizo a mano, no repetir.
+          SKIP=false
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ] && [ -s "$NOTES_DIR/$DATE.md" ]; then SKIP=true; fi
+          echo "skip=$SKIP" >> "$GITHUB_OUTPUT"
+          if [ "$SKIP" = true ]; then echo "El radar de $DATE ya existe: esta corrida programada no hace nada."; fi
           mkdir -p "$NOTES_DIR/Semanal" "$NOTES_DIR/NexoSalud" "$NOTES_DIR/Equipos" work
 
       - uses: actions/setup-python@v5
+        if: steps.setup.outputs.skip != 'true'
         with:
           python-version: "3.12"
           cache: pip
 
       - uses: actions/setup-node@v4
+        if: steps.setup.outputs.skip != 'true'
         with:
           node-version: "22"
 
       - name: Instalar dependencias
+        if: steps.setup.outputs.skip != 'true'
         run: |
           pip install -r requirements.txt
           npm install -g @anthropic-ai/claude-code
           command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
 
       - name: 1. Recolectar
+        if: steps.setup.outputs.skip != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python -m radar.collect
 
       - name: 2. Escribir el radar diario (Claude Code)
+        if: steps.setup.outputs.skip != 'true'
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -104,6 +114,7 @@ jobs:
           test -s work/guion.txt || { echo "Falta el guion"; exit 1; }
 
       - name: 2b. Radar NexoSalud (solo si hay novedades)
+        if: steps.setup.outputs.skip != 'true'
         continue-on-error: true
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -118,6 +129,7 @@ jobs:
           else echo "NexoSalud: sin novedades hoy. $(cat work/nexosalud_sin_novedades.txt 2>/dev/null)"; fi
 
       - name: 2c. Equipos y mentalidad (solo si hay artículos)
+        if: steps.setup.outputs.skip != 'true'
         continue-on-error: true
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -129,7 +141,7 @@ jobs:
           else echo "Equipos: sin artículos hoy. $(cat work/equipos_sin_novedades.txt 2>/dev/null)"; fi
 
       - name: 3. Resumen semanal (viernes)
-        if: steps.setup.outputs.weekly == 'true'
+        if: ${{ steps.setup.outputs.skip != 'true' && steps.setup.outputs.weekly == 'true' }}
         continue-on-error: true
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -137,6 +149,7 @@ jobs:
         run: bash scripts/run_claude.sh prompts/weekly.md
 
       - name: 4. Audio
+        if: steps.setup.outputs.skip != 'true'
         continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -151,6 +164,7 @@ jobs:
           fi
 
       - name: 5. Guardar nota y estado
+        if: steps.setup.outputs.skip != 'true'
         run: |
           git config --global user.name "radar-ia[bot]"
           git config --global user.email "radar-ia@users.noreply.github.com"
@@ -169,7 +183,7 @@ jobs:
           git pull --rebase --autostash && git push
 
       - name: 6. Enviar a Telegram
-        if: ${{ !inputs.skip_telegram }}
+        if: ${{ steps.setup.outputs.skip != 'true' && !inputs.skip_telegram }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -178,7 +192,7 @@ jobs:
             --audio "work/radar-$DATE.mp3" "work/radar-semanal-$DATE.mp3"
 
       - name: 6b. Enviar Equipos y mentalidad a Telegram (si hubo artículos)
-        if: ${{ !inputs.skip_telegram && hashFiles('work/headlines_equipos.json') != '' }}
+        if: ${{ steps.setup.outputs.skip != 'true' && !inputs.skip_telegram && hashFiles('work/headlines_equipos.json') != '' }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -188,7 +202,7 @@ jobs:
             --audio "work/equipos-$DATE.mp3"
 
       - name: 7. Enviar NexoSalud a Telegram (si hubo novedades)
-        if: ${{ !inputs.skip_telegram && hashFiles('work/headlines_nexosalud.json') != '' }}
+        if: ${{ steps.setup.outputs.skip != 'true' && !inputs.skip_telegram && hashFiles('work/headlines_nexosalud.json') != '' }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
