@@ -2,8 +2,12 @@ name: Radar IA
 
 on:
   schedule:
-    # 10:27 UTC = 07:27 en Argentina (UTC-3, sin horario de verano)
+    # 10:27 UTC = 07:27 en Argentina (UTC-3, sin horario de verano).
+    # GitHub a veces atrasa o saltea corridas programadas: las de 08:07 y 09:17 son de
+    # respaldo y no hacen nada si el radar del día ya se generó.
     - cron: "27 10 * * *"
+    - cron: "7 11 * * *"
+    - cron: "17 12 * * *"
   workflow_dispatch:
     inputs:
       weekly:
@@ -67,6 +71,7 @@ jobs:
           {
             echo "NEXO_NOTE_URL=${NOTE_URL%/*}/NexoSalud/$DATE.md"
             echo "EQUIPOS_NOTE_URL=${NOTE_URL%/*}/Equipos/$DATE.md"
+            echo "DW_NOTE_URL=${NOTE_URL%/*}/Equipos/DW/$DATE.md"
             echo "DATE=$DATE"
             echo "NOTES_DIR=$NOTES_DIR"
             echo "NOTE_URL=$NOTE_URL"
@@ -77,7 +82,7 @@ jobs:
           if [ "$GITHUB_EVENT_NAME" = "schedule" ] && [ -s "$NOTES_DIR/$DATE.md" ]; then SKIP=true; fi
           echo "skip=$SKIP" >> "$GITHUB_OUTPUT"
           if [ "$SKIP" = true ]; then echo "El radar de $DATE ya existe: esta corrida programada no hace nada."; fi
-          mkdir -p "$NOTES_DIR/Semanal" "$NOTES_DIR/NexoSalud" "$NOTES_DIR/Equipos" work
+          mkdir -p "$NOTES_DIR/Semanal" "$NOTES_DIR/NexoSalud" "$NOTES_DIR/Equipos/DW" work
 
       - uses: actions/setup-python@v5
         if: steps.setup.outputs.skip != 'true'
@@ -137,6 +142,17 @@ jobs:
           if [ -s work/guion_equipos.txt ]; then echo "Práctica del día: lista"
           else echo "Práctica del día: no se generó"; fi
 
+      - name: 2d. Digital Worker (técnica de colaboración del día)
+        if: steps.setup.outputs.skip != 'true'
+        continue-on-error: true
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_MAX_BUDGET_USD: "0.80"
+        run: |
+          bash scripts/run_claude.sh prompts/dw.md
+          if [ -s work/guion_dw.txt ]; then echo "Digital Worker: listo"; else echo "Digital Worker: no se generó"; fi
+
       - name: 3. Resumen semanal (viernes)
         if: ${{ steps.setup.outputs.skip != 'true' && steps.setup.outputs.weekly == 'true' }}
         continue-on-error: true
@@ -161,6 +177,9 @@ jobs:
           fi
           if [ -s work/guion_equipos.txt ]; then
             python -m radar.tts work/guion_equipos.txt "work/equipos-$DATE.mp3"
+          fi
+          if [ -s work/guion_dw.txt ]; then
+            python -m radar.tts work/guion_dw.txt "work/dw-$DATE.mp3"
           fi
 
       - name: 5. Guardar nota y estado
@@ -204,6 +223,16 @@ jobs:
           python -m radar.telegram --date "$DATE" --name "Práctica del día" --icon "🧭" \
             --headlines work/headlines_equipos.json --note-url "$EQUIPOS_NOTE_URL" \
             --audio "work/equipos-$DATE.mp3"
+
+      - name: 6c. Enviar Digital Worker a Telegram
+        if: ${{ steps.setup.outputs.skip != 'true' && !inputs.skip_telegram && hashFiles('work/headlines_dw.json') != '' }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python -m radar.telegram --date "$DATE" --name "Digital Worker" --icon "🤖" \
+            --headlines work/headlines_dw.json --note-url "$DW_NOTE_URL" \
+            --audio "work/dw-$DATE.mp3"
 
       - name: 7. Enviar NexoSalud a Telegram (si hubo novedades)
         if: ${{ steps.setup.outputs.skip != 'true' && !inputs.skip_telegram && hashFiles('work/headlines_nexosalud.json') != '' }}

@@ -17,12 +17,13 @@ done
 
 export DATE="$(date +%F)"
 export NOTES_DIR="${OBSIDIAN_VAULT:?definí OBSIDIAN_VAULT en .env}/Radar"
-mkdir -p "$NOTES_DIR/Semanal" "$NOTES_DIR/NexoSalud" "$NOTES_DIR/Equipos" work
+mkdir -p "$NOTES_DIR/Semanal" "$NOTES_DIR/NexoSalud" "$NOTES_DIR/Equipos/DW" work
 rm -f work/guion*.txt work/headlines*.json work/*_sin_novedades.txt
 
 python -m radar.collect
 bash scripts/run_claude.sh prompts/daily.md
 bash scripts/run_claude.sh prompts/equipos.md || echo "⚠️  Falló la Práctica del día, sigo igual"
+bash scripts/run_claude.sh prompts/dw.md || echo "⚠️  Falló Digital Worker, sigo igual"
 bash scripts/run_claude.sh prompts/nexosalud.md || echo "⚠️  Falló el radar NexoSalud, sigo igual"
 [ "$WEEKLY" = true ] && bash scripts/run_claude.sh prompts/weekly.md
 
@@ -36,6 +37,11 @@ if [ "$TELEGRAM" = true ]; then
     [ -s work/guion_equipos.txt ] && python -m radar.tts work/guion_equipos.txt "work/equipos-$DATE.mp3"
     python -m radar.telegram --date "$DATE" --name "Práctica del día" --icon "🧭" \
       --headlines work/headlines_equipos.json --audio "work/equipos-$DATE.mp3"
+  fi
+  if [ -s work/headlines_dw.json ]; then
+    [ -s work/guion_dw.txt ] && python -m radar.tts work/guion_dw.txt "work/dw-$DATE.mp3"
+    python -m radar.telegram --date "$DATE" --name "Digital Worker" --icon "🤖" \
+      --headlines work/headlines_dw.json --audio "work/dw-$DATE.mp3"
   fi
   if [ -s work/headlines_nexosalud.json ]; then
     [ -s work/guion_nexosalud.txt ] && python -m radar.tts work/guion_nexosalud.txt "work/nexosalud-$DATE.mp3"

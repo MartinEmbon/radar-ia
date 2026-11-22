@@ -9,7 +9,7 @@ on:
       cual:
         description: "Qué reenviar"
         type: choice
-        options: [practica, radar, nexosalud]
+        options: [practica, dw, radar, nexosalud]
         default: practica
 
 jobs:
@@ -42,6 +42,7 @@ jobs:
           BASE="https://github.com/$GITHUB_REPOSITORY/blob/HEAD/notes/Radar"
           case "$CUAL" in
             practica)  SUF=_equipos;   NAME="Práctica del día"; ICON="🧭"; NOTE="$BASE/Equipos/$DATE.md" ;;
+            dw)        SUF=_dw;        NAME="Digital Worker";   ICON="🤖"; NOTE="$BASE/Equipos/DW/$DATE.md" ;;
             nexosalud) SUF=_nexosalud; NAME="Radar NexoSalud";  ICON="🩺"; NOTE="$BASE/NexoSalud/$DATE.md" ;;
             *)         SUF="";         NAME="Radar IA";         ICON="🛰️"; NOTE="$BASE/$DATE.md" ;;
           esac
