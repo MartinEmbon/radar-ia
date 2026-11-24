@@ -1,7 +1,1 @@
-{"resumen": "Anthropic presenta Claude Ship y una guía para asegurar agentes de código, GitHub suma estados de issues legibles por agentes y Richpanel muestra cómo automatiza el 50% del soporte.", "titulares": [
-{"titulo": "Claude Ship: revisión, arreglo y aprobación de PRs con una política en el repo", "url": "https://www.claude.com/resources/articles/introducing-claude-ship"},
-{"titulo": "Guía de Anthropic para asegurar agentes de código en la empresa", "url": "https://www.claude.com/resources/articles/enterprise-guide-to-securing-coding-agents"},
-{"titulo": "Richpanel: 50% del soporte automatizado en 30 días con un agente que arma a los otros", "url": "https://openai.com/business/customer-stories/richpanel-ai-customer-support"},
-{"titulo": "GitHub: estados de issues y tableros por repo, legibles por agentes", "url": "https://github.blog/changelog/2026-11-23-issue-statuses-and-repository-boards-are-in-public-preview"},
-{"titulo": "Retención cero con monitoreo de abuso: Enterprise Frontier Safeguards en beta", "url": "https://www.claude.com/resources/articles/zero-data-retention-with-enterprise-frontier-safeguards"}
-]}
+{"resumen": "MCP suma skills, tareas largas y confirmaciones del usuario, e iFood muestra cómo corre agentes de código en más de 15.000 repos a unos 4 centavos por ejecución.", "titulares": [{"titulo": "MCP gana skills, tareas largas y confirmaciones del usuario", "url": "https://claude.com/resources/articles/skills-over-mcp-tasks-and-more"}, {"titulo": "iFood: agentes de código en más de 15.000 repositorios con una API central", "url": "https://openai.com/business/customer-stories/ifood"}]}

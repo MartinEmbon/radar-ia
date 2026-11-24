@@ -1,0 +1,15 @@
+Martín, este es tu radar de NexoSalud. Hoy fue un día corto: de todo lo que revisé, un solo tema pasó el filtro.
+
+La noticia es de Innovaccer, una plataforma de datos de salud de Estados Unidos. El 23 de noviembre anunció que sumó Grok Voice, un modelo de voz entrenado con audio de llamadas reales, a sus agentes de voz con inteligencia artificial para pacientes. El modelo funciona en más de veinticinco idiomas y la empresa dice que cumple con los requisitos de HIPAA, la norma de privacidad de datos de salud de Estados Unidos.
+
+Lo más llamativo son los números que da la propia empresa. En seis meses, las interacciones de voz con pacientes pasaron de unas doscientas cincuenta mil a más de cinco millones. Dicen también que las derivaciones se triplicaron y que el tiempo de documentación bajó noventa por ciento por caso. Son cifras de la empresa y la nota no explica cómo las midieron, así que conviene tomarlas con cuidado. Además, es una plataforma pensada para grandes sistemas de salud de Estados Unidos, lejos del consultorio argentino. Lo que sí confirma es que el contacto automático con pacientes ya se usa a gran escala.
+
+Qué podría ofrecer NexoSalud. Esto es una propuesta mía, no un hecho. Hoy los recordatorios por WhatsApp son de una sola vía. La idea sería pasarlos a conversación de dos vías: que el paciente pueda confirmar, reprogramar o cancelar el turno contestando el mensaje, y que el resultado quede escrito directamente en la agenda. Después se podrían sumar avisos de control por fecha, y que lo que el paciente responda quede como una nota pendiente para que el médico la revise. Así se mantiene la promesa de lo cargás una vez, porque nadie tiene que volver a tipear lo que dijo el paciente. La voz queda para más adelante, porque suma bastante esfuerzo comparado con WhatsApp.
+
+El esfuerzo lo estimo medio. Los recordatorios, la agenda y la historia clínica ya existen. Lo que cuesta es diseñar bien las conversaciones, qué hacer cuando el paciente responde algo inesperado y cómo pasarle el caso a una persona del consultorio. Y la inteligencia artificial no debería interpretar nada clínico: solo registrar lo que el paciente dijo.
+
+Para explicárselo a un médico alcanza con esto: tu consultorio le escribe al paciente para confirmar el turno o recordarle el control, y lo que el paciente contesta queda anotado en su ficha sin que nadie tenga que cargarlo.
+
+Una aclaración: no pude revisar los sitios Mobihealthnews y Healthcare IT News porque devolvieron error de acceso, así que puede haber novedades que hoy no vi.
+
+La idea más concreta para avanzar: armar un primer prototipo que solo confirme, reprograme o cancele turnos por WhatsApp en dos vías, probarlo con dos o tres consultorios y medir cuántos turnos se confirman sin intervención de la secretaria. Con eso ya tenés un dato propio para decidir si seguir con los controles y el seguimiento de crónicos.
