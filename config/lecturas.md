@@ -15,6 +15,18 @@ El orden de la lista es el orden en que salen.
 - [Encoding Team Standards](https://martinfowler.com/articles/reduce-friction-ai/encoding-team-standards.html): Rahul Garg. Patrón 4.
 - [Feedback Flywheel](https://martinfowler.com/articles/reduce-friction-ai/feedback-flywheel.html): Rahul Garg. Patrón 5.
 
+## Serie: The AI SDLC transformation playbook (Atlassian, 2026)
+Documento PDF que compartió Martín; las notas de lectura están en el repo. Una entrega por día. Al
+bajarlo al Digital Worker, la conexión es: planificación → Lab 1 (analista y SPEC), diseño → Lab 2
+(arquitecto y Skills), desarrollo → Lab 3, revisión → Lab 4 (revisor), mantenimiento → Lab 5
+(soporte y RCA), contexto y medición → Lab 6 (memoria) y las métricas del playbook.
+- [Panorama: los 7 pilares del SDLC nativo de IA](config/lecturas/atlassian-ai-sdlc.md#panorama): Atlassian. Por qué el cuello de botella se mueve antes y después del código.
+- [Contexto y medición](config/lecturas/atlassian-ai-sdlc.md#contexto-y-medicion): Atlassian. El contexto como base y medir antes de escalar.
+- [Planificación y diseño](config/lecturas/atlassian-ai-sdlc.md#planificacion-y-diseno): Atlassian. De escribir specs a aplicar criterio.
+- [Desarrollo y revisión](config/lecturas/atlassian-ai-sdlc.md#desarrollo-y-revision): Atlassian. La calidad depende del contexto, no del talento individual.
+- [Mantenimiento](config/lecturas/atlassian-ai-sdlc.md#mantenimiento): Atlassian. Agentes que hacen el triaje y el análisis de causa raíz.
+- [Navegar el cambio: las cinco jugadas](config/lecturas/atlassian-ai-sdlc.md#navegar-el-cambio): Atlassian. Modelo operativo, no caja de herramientas.
+
 ## Más de martinfowler.com sobre trabajar con IA
 - [Harness engineering for coding agent users](https://martinfowler.com/articles/harness-engineering.html): Birgitta Böckeler. Modelo mental de guías y sensores para confiar en el código generado.
 - [The Orchestrator's Tax](https://martinfowler.com/articles/orchestrator-tax.html): Rahul Garg. Reglas para delegar trabajo en subagentes.

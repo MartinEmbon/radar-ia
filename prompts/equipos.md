@@ -13,7 +13,7 @@ Esto **no** es una sección de noticias ni de modelos. Es como tener un mentor q
 2. **Si no hay**, tomá la primera lectura de `config/lecturas.md` cuya URL no aparezca en ninguna nota de `$NOTES_DIR/Equipos/`. Si es una serie de memos o entregas, cubrí una sola.
 3. Si se terminó la cola, elegí el mejor artículo de fondo que encuentres en el índice de martinfowler.com de `check_pages_equipos` que no esté cubierto.
 
-Abrí el artículo elegido con WebFetch y leelo completo. Como máximo 8 WebFetch en total.
+Abrí el artículo elegido con WebFetch y leelo completo. Como máximo 8 WebFetch en total. Si la lectura de la cola apunta a un archivo del repo (por ejemplo `config/lecturas/...md#seccion`), leelo con Read: son notas de lectura de un documento que compartió Martín. Cubrí solo la sección del ancla, poné esa misma ruta con su ancla en `fuente:`, y aclará en la nota que lo que el autor presenta como su producto es el enfoque de un proveedor y que sus números son internos.
 
 ## Reglas
 - No inventes nada: todo sale del artículo. Separá lo que dice el autor de tus propuestas.
